@@ -1,7 +1,7 @@
-/*	Author: sramk002
- *  Partner(s) Name: 
- *	Lab Section:
- *	Assignment: Lab #  Exercise #
+/*	Author: Sidharth Ramkumar (sramk002@ucr.edu)
+ *  Partner(s) Name: none 
+ *	Lab Section: 022
+ *	Assignment: Lab #9  Exercise #1
  *	Exercise Description: [optional - include for your own benefit]
  *
  *	I acknowledge all content contained herein, excluding template or example
@@ -9,6 +9,7 @@
  */
 #include <avr/io.h>
 #ifdef _SIMULATE_
+#include "timer.h"
 #include "simAVRHeader.h"
 #endif
 
