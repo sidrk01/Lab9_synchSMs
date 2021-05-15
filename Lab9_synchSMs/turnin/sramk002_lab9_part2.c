@@ -21,6 +21,10 @@ enum BlinkingLEDSM {SMStart1, Bit_ON, Bit_OFF } one_state;
 enum CombineLEDsSM {SMStart2, Comb_Bit } comb_state;
 
 void Tick_Fct1(){
+    static unsigned int counter1;
+    if (counter1 < 300){
+        counter1 += 1;
+    } else {
     switch (three_state){
         case SMStart:
             three_state = Bit0;
@@ -55,9 +59,15 @@ void Tick_Fct1(){
             threeLEDs = 0x04;
         break; 
     }
+    counter1 = 0;
+    }
 }
 
 void Tick_Fct2(){
+    static unsigned int counter2;
+    if (counter2 < 1000){
+        counter2 += 1;
+    } else {
     switch(one_state){
         case SMStart1:
            one_state = Bit_ON;
@@ -84,6 +94,8 @@ void Tick_Fct2(){
              blinkingLED = 0x00;
         break;    
     }
+        counter2 = 0;
+   }
 }
 
 void Tick_Fct3(){
@@ -111,7 +123,7 @@ int main(void) {
     /* Insert DDR and PORT initializations */
     DDRB = 0x00;    PORTB = 0x00;
     /* Insert your solution below */
-    TimerSet(1000);
+    TimerSet(1);
     TimerOn();
     
     threeLEDs = 0x00;
