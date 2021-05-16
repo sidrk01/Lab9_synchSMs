@@ -26,7 +26,7 @@ enum ThreeLEDsSM {SMStart, Bit0, Bit1, Bit2 } three_state;
 enum BlinkingLEDSM {SMStart1, Bit_ON, Bit_OFF } one_state;
 enum CombineLEDsSM {SMStart2, Comb_Bit } comb_state;
 enum SpeakOn {SMStart3, Speak_On, Speak_Off } speaky_state;
-enum FreqChange {SMStart4, Wait, Inc, Wait_Inc, Dec, Wait_Dec} freq_state;
+enum FreqChange {SMStart4, Wait, Inc, Inc_Wait, Dec, Dec_Wait} freq_state;
 
 void Tick_Fct1(){
     static unsigned int counter1;
