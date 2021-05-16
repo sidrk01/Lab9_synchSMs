@@ -131,18 +131,18 @@ void Tick_Fct4(){
     } else {
   switch (speaky_state){
     case SMStart3:
-      speaky_state = speak_Off;
+      speaky_state = Speak_Off;
      break;
      
     case speak_On:
-      speaky_state = speak_Off;
+      speaky_state = Speak_Off;
      break;
       
     case speak_Off:
       if (b3){
-      speaky_state = speak_On;
+      speaky_state = Speak_On;
       } else {
-       speaky_state = speak_Off;
+       speaky_state = Speak_Off;
       }
       break;
   }
@@ -178,7 +178,7 @@ int main(void) {
   three_state = SMStart;
   one_state = SMStart1;
   comb_state = SMStart2;
-  speaky_state = SStart3;
+  speaky_state = SMStart3;
   
     while (1) {
         
