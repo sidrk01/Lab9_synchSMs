@@ -14,12 +14,16 @@
 #include "simAVRHeader.h"
 #endif
 
+#define b3 (~PINA & 0x04) 
+
 unsigned char threeLEDs;
 unsigned char blinkingLED;
+unsigned char speakerOn;
 
 enum ThreeLEDsSM {SMStart, Bit0, Bit1, Bit2 } three_state;
 enum BlinkingLEDSM {SMStart1, Bit_ON, Bit_OFF } one_state;
 enum CombineLEDsSM {SMStart2, Comb_Bit } comb_state;
+enum SpeakOn {SMStart3, Speak_On, Speak_Off } speaky_state;
 
 void Tick_Fct1(){
     static unsigned int counter1;
@@ -115,13 +119,53 @@ void Tick_Fct3(){
             break;
            
         case Comb_Bit:
-            PORTB = threeLEDs | blinkingLED;
+            PORTB = (threeLEDs | blinkingLED) | speakerOn;
         break;
     }
 }
 
+void Tick_Fct4(){
+  static unsigned int counter2;
+    if (counter3 < 2){
+        counter3 += 1;
+    } else {
+  switch (speaky_state){
+    case SMStart3:
+      speaky_state = speak_Off;
+     break;
+     
+    case speak_On:
+      speaky_state = speak_Off;
+     break;
+      
+    case speak_Off:
+      if (b3){
+      speaky_state = speak_On;
+      } else {
+       speaky_state = speak_Off;
+      }
+      break;
+  }
+      
+   switch (speaky_state){
+     case speak_On:
+     speakerOn = 0x10;
+     break;
+       
+     case speak_Off:
+     speakerOn = 0x00;
+     break;
+       
+     default:
+     break;
+   }
+   counter3 = 0;   
+  }
+}
+
 int main(void) {
     /* Insert DDR and PORT initializations */
+    DDRA = 0x00;    PORTA = 0xFF;
     DDRB = 0x00;    PORTB = 0x00;
     /* Insert your solution below */
     TimerSet(1);
@@ -129,12 +173,14 @@ int main(void) {
     
     threeLEDs = 0x00;
     blinkingLED = 0x00;
+    speakerOn = 0x00;
     
     while (1) {
         
     Tick_Fct1();
     Tick_Fct2();
     Tick_Fct3();
+    Tick_Fct4();  
         
     while(!TimerFlag);
     TimerFlag = 0;
