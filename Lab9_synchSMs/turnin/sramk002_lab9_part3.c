@@ -134,11 +134,11 @@ void Tick_Fct4(){
       speaky_state = Speak_Off;
      break;
      
-    case speak_On:
+    case Speak_On:
       speaky_state = Speak_Off;
      break;
       
-    case speak_Off:
+    case Speak_Off:
       if (b3){
       speaky_state = Speak_On;
       } else {
@@ -148,11 +148,11 @@ void Tick_Fct4(){
   }
       
    switch (speaky_state){
-     case speak_On:
+     case Speak_On:
      speakerOn = 0x10;
      break;
        
-     case speak_Off:
+     case Speak_Off:
      speakerOn = 0x00;
      break;
        
