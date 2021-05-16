@@ -13,16 +13,20 @@
 #include "simAVRHeader.h"
 #endif
 
+#define b1 (~PINA & 0x01)
+#define b2 (~PINA & 0x02) 
 #define b3 (~PINA & 0x04) 
 
 unsigned char threeLEDs;
 unsigned char blinkingLED;
 unsigned char speakerOn;
+unsigned char freq;
 
 enum ThreeLEDsSM {SMStart, Bit0, Bit1, Bit2 } three_state;
 enum BlinkingLEDSM {SMStart1, Bit_ON, Bit_OFF } one_state;
 enum CombineLEDsSM {SMStart2, Comb_Bit } comb_state;
 enum SpeakOn {SMStart3, Speak_On, Speak_Off } speaky_state;
+enum FreqChange {SMStart4, Wait, Inc, Wait_Inc, Dec, Wait_Dec} freq_state;
 
 void Tick_Fct1(){
     static unsigned int counter1;
@@ -125,7 +129,7 @@ void Tick_Fct3(){
 
 void Tick_Fct4(){
   static unsigned int counter3;
-    if (counter3 < 2){
+    if (counter3 < freq){
         counter3 += 1;
     } else {
   switch (speaky_state){
@@ -162,6 +166,69 @@ void Tick_Fct4(){
   }
 }
 
+void Tick_Fct5(){
+    switch (freq_state){
+        case SMStart:
+        freq_state = Wait;
+        break;
+        
+        case Wait:
+            if (b1){
+            freq_state = Inc;
+            } else if (b2){
+            freq_state = Dec;
+            } else {
+            freq_state = Wait;
+            }
+       break;
+            
+        case Inc:
+        freq_state = Inc_Wait;
+        break;
+        
+        case Inc_Wait:
+        if (b1){
+         freq_state = Inc_Wait;
+        } else if (b2){
+         freq_state = Dec;
+        } else {
+        freq_state = Wait;
+        }
+        break;
+            
+        case Dec:
+          freq_state = Dec_Wait;
+        break;
+            
+        case Dec_Wait:
+            if (b1){
+            freq_state = Inc;
+            } else if (b2){
+            freq_state = Dec_Wait;
+            } else {
+            freq_state = Wait;
+            }
+         break;
+    }
+    
+    switch (freq_state){
+        case Inc:
+            if (freq < 255){
+                freq += 1;
+            }
+        break;
+            
+        case Dec:
+            if (freq > 1){
+                freq -= 1;
+            }
+            break;
+        
+        default:
+        break;
+    }
+}
+
 int main(void) {
     /* Insert DDR and PORT initializations */
     DDRA = 0x00;    PORTA = 0xFF;
@@ -173,18 +240,21 @@ int main(void) {
     threeLEDs = 0x00;
     blinkingLED = 0x00;
     speakerOn = 0x00;
+    freq = 0x00;
     
   three_state = SMStart;
   one_state = SMStart1;
   comb_state = SMStart2;
   speaky_state = SMStart3;
-  
+  freq_state = SMStart4;
+    
     while (1) {
         
     Tick_Fct1();
     Tick_Fct2();
     Tick_Fct3();
     Tick_Fct4();  
+    Tick_Fct5();    
         
     while(!TimerFlag);
     TimerFlag = 0;
