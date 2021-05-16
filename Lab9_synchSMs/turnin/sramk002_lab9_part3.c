@@ -125,7 +125,7 @@ void Tick_Fct3(){
 }
 
 void Tick_Fct4(){
-  static unsigned int counter2;
+  static unsigned int counter3;
     if (counter3 < 2){
         counter3 += 1;
     } else {
@@ -175,6 +175,11 @@ int main(void) {
     blinkingLED = 0x00;
     speakerOn = 0x00;
     
+  three_state = SMStart;
+  one_state = SMStart1;
+  comb_state = SMStart2;
+  speaky_state = SStart3;
+  
     while (1) {
         
     Tick_Fct1();
